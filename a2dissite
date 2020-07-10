@@ -6,7 +6,7 @@ if($file eq "") {
     exit 1;
 }
 
-unless(-e "/etc/httpd/conf/sites-enabled/$file") {
+unless(-e "/etc/apache2/conf/sites-enabled/$file") {
     print "[!] File already disabled!\n";
     exit 2;
 }
@@ -17,7 +17,7 @@ if ($login != 'root') {
     exit 3;
 }
 
-system('rm /etc/httpd/conf/sites-enabled/' . $file);
+system('rm /etc/apache2/conf/sites-enabled/' . $file);
 print "[*] Disabled the site $file. Reloading your configuration.\n";
 
 print `systemctl restart httpd`;
