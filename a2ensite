@@ -13,33 +13,33 @@ if($file eq "") {
     print "[!] Usage: a2ensite <vhost-name>\n";
     exit 1;
 }
-unless(-e "/etc/apache2/conf/sites-available/$file") {
+unless(-e "/etc/apache2/sites-available/$file") {
     print "[!] File doesn't exist!\n";
     exit 2;
 }
 
 # Checking if already enabled
-if(-e "/etc/apache2/conf/sites-enabled/$file") {
+if(-e "/etc/apache2/sites-enabled/$file") {
     print "[!] Site already enabled. Exiting...\n";
     exit 3;
 }
 
 # Linking the vhost
-system('ln -s "/etc/apache2/conf/sites-available/' . $file . '" "/etc/apache2/conf/sites-enabled/' . $file . '"');
+system('ln -s "/etc/apache2/sites-available/' . $file . '" "/etc/apache2/sites-enabled/' . $file . '"');
 print "[*] Linked the site $file. \n";
 
 # Checking for errors
-my $check = system('apachectl -f "/etc/apache2/conf/httpd.conf" -t 2>/dev/null');
+my $check = system('apachectl -f "/etc/apache2/apache2.conf" -t 2>/dev/null');
 
 unless($check == 0) {
     print "[!] Syntax check failed!\n";
-    print "[!] Please run 'apachectl -f /etc/apache2/conf/httpd.conf -t' and investigate.\n";
+    print "[!] Please run 'apachectl -f /etc/apache2/apache2.conf -t' and investigate.\n";
     print "[!] Removing the link and exiting...\n";
-    system('rm /etc/apache2/conf/sites-enabled/' . $file);
+    system('rm /etc/apache2/sites-enabled/' . $file);
     exit 4;
 }
 print "[*] Syntax check passed. Reloading your configuration.\n";
-print `systemctl restart httpd`;
+print `systemctl restart apache2`;
 
 
 print "[*] Done. Have fun!\n";
